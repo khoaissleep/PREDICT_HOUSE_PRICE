@@ -35,7 +35,7 @@ y = readfile_normal["price"]
 
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 
-model = LinearRegression()
+model = LinearRegression(fit_intercept=True)
 model.fit(x_train, y_train)
 
 y_predict = model.predict(x_test)
@@ -51,14 +51,30 @@ print("Mean Absolute Error (MAE):", mae)
 
 import matplotlib.pyplot as plt
 
-# Plot the true vs predicted values
-plt.figure(figsize=(10, 6))
-plt.scatter(y_test, y_predict, color='blue', label='Predicted vs True Values')
-plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], color='red', linestyle='--', label='Ideal Fit Line')
+import matplotlib.pyplot as plt
 
-plt.title("Linear Regression: Predicted vs True Prices")
-plt.xlabel("True Prices")
-plt.ylabel("Predicted Prices")
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Tạo bins cho giá trị thực tế và giá trị dự đoán
+bins = np.linspace(y_test.min(), y_test.max(), 20)  # Chia thành 20 bins
+bin_centers = (bins[:-1] + bins[1:]) / 2  # Tính trung tâm của mỗi bin
+
+# Gán mỗi giá trị của y_test và y_predict vào bin tương ứng
+binned_y_test = np.digitize(y_test, bins)  # Gán y_test vào các bin
+binned_y_predict = np.digitize(y_predict, bins)  # Gán y_predict vào các bin
+
+# Tính trung bình giá trị thực tế và dự đoán trong mỗi bin
+mean_y_test = [y_test[binned_y_test == i].mean() for i in range(1, len(bins))]
+mean_y_predict = [y_predict[binned_y_predict == i].mean() for i in range(1, len(bins))]
+
+# Vẽ biểu đồ so sánh giữa giá trị thực tế và giá trị dự đoán trong mỗi bin
+plt.figure(figsize=(10, 6))
+plt.plot(bin_centers, mean_y_test, label="Giá trị thực tế", color='blue', marker='o')
+plt.plot(bin_centers, mean_y_predict, label="Giá trị dự đoán", color='red', marker='x')
+plt.xlabel('Giá trị thực tế')
+plt.ylabel('Giá trị dự đoán')
+plt.title('Binned Correlation Analysis - So sánh Giá trị Thực tế và Dự đoán')
 plt.legend()
 plt.grid(True)
 plt.show()
