@@ -1,6 +1,4 @@
-# Tạo nội dung cho README.md
 
-readme_content = """
 # Housing Price Prediction and Data Visualization
 
 This project includes two Python scripts for analyzing housing price data:
